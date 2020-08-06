@@ -3,7 +3,7 @@
 [![CI](https://github.com/athena-framework/spec/workflows/CI/badge.svg)](https://github.com/athena-framework/spec/actions?query=workflow%3ACI)
 [![Latest release](https://img.shields.io/github/release/athena-framework/spec.svg)](https://github.com/athena-framework/spec/releases)
 
-DESCRIPTION
+Common/helpful Spec compliant testing utilities
 
 ## Installation
 

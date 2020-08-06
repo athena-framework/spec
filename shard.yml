@@ -11,7 +11,7 @@ repository: https://github.com/athena-framework/spec
 documentation: https://athena-framework.github.io/spec/Athena/Spec.html
 
 description: |
-  DESCRIPTION.
+  Common/helpful Spec compliant testing utilities.
 
 authors:
   - George Dietrich <george@dietrich.app>
