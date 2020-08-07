@@ -79,7 +79,7 @@
 # ```
 # abstract struct SomeTypeTestCase < ASPEC::TestCase
 #   # Require children to define a method to get the object.
-#   protected abstract def get_object
+#   protected abstract def get_object : Calculator
 #
 #   # Test cases can use the abstract method for tests common to all test cases of this type.
 #   def test_common : Nil
@@ -90,7 +90,7 @@
 # end
 #
 # struct CalculatorTest < SomeTypeTestCase
-#   protected def get_object
+#   protected def get_object : Calculator
 #     Calculator.new
 #   end
 #
@@ -226,13 +226,13 @@ abstract struct Athena::Spec::TestCase
         end
 
         {% methods = [] of Nil %}
- 
+
         {% for parent in @type.ancestors.select &.<(TestCase) %}
           {% for method in parent.methods.select { |m| m.name =~ /^(?:f|p)?test_/ } %}
             {% methods << method %}
           {% end %}
         {% end %}
- 
+
         {% for test in methods + @type.methods.select { |m| m.name =~ /^(?:f|p)?test_/ } %}
           {% focus = test.name.starts_with?("ftest_") || !!test.annotation Focus %}
           {% tags = (tags = test.annotation(Tags)) ? tags.args : nil %}
