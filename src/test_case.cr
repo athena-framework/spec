@@ -135,8 +135,8 @@
 # #   common
 # #   specific
 # # DataProviderTest
-# #   two
-# #   three
+# #   squares two
+# #   squares three
 # #
 # # Pending:
 # # ExampleSpec substract
@@ -196,8 +196,8 @@ abstract struct Athena::Spec::TestCase
   #
   # ASPEC.run_all # =>
   # # DataProviderTest
-  # #   two
-  # #   three
+  # #   squares two
+  # #   squares three
   # ```
   annotation DataProvider; end
 
