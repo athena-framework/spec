@@ -289,16 +289,16 @@ abstract struct Athena::Spec::TestCase
             {% for data_provider in test.annotations DataProvider %}
               {% data_provider_method_name = data_provider[0] || data_provider.raise "One or more data provider for test '#{@type}##{test.name.id}' is mising its name." %}
 
-              {% provider_method_return_type = (@type.methods.find(&.name.stringify.==(data_provider[0])).return_type || raise "Data provider '#{@type}##{data_provider[0].id}' must have a return type of Hash, NamedTuple, Array, or Tuple.").resolve %}
+              {% provider_method_return_type = (@type.methods.find(&.name.stringify.==(data_provider_method_name)).return_type || raise "Data provider '#{@type}##{data_provider_method_name.id}' must have a return type of Hash, NamedTuple, Array, or Tuple.").resolve %}
 
               {% if provider_method_return_type == Hash || provider_method_return_type == NamedTuple %}
-                instance.{{data_provider[0].id}}.each do |name, args|
+                instance.{{data_provider_method_name.id}}.each do |name, args|
                   {{method.id}} "#{{{description}}} #{name}", focus: {{focus}}, tags: {{tags}} do
                     instance.{{test.name.id}} *args
                   end
                 end
               {% elsif provider_method_return_type == Array || provider_method_return_type == Tuple %}
-                instance.{{data_provider[0].id}}.each_with_index do |args, idx|
+                instance.{{data_provider_method_name.id}}.each_with_index do |args, idx|
                   {{method.id}} "#{{{description}}} #{idx}", focus: {{focus}}, tags: {{tags}} do
                     instance.{{test.name.id}} *args
                   end
