@@ -237,17 +237,18 @@ abstract struct Athena::Spec::TestCase
           {% focus = test.name.starts_with?("ftest_") || !!test.annotation Focus %}
           {% tags = (tags = test.annotation(Tags)) ? tags.args : nil %}
           {% method = (test.name.starts_with?("ptest_") || !!test.annotation Pending) ? "pending" : "it" %}
+          {% description = test.name.stringify.gsub(/^(?:f|p)?test_/, "").underscore.gsub(/_/, " ") %}
 
           {% unless test.annotations(DataProvider).empty? %}
             {% for data_provider in test.annotations DataProvider %}
               instance.{{data_provider[0].id}}.each do |name, args|
-                {{method.id}} name, focus: {{focus}}, tags: {{tags}} do
+                {{method.id}} "#{{{description}}} #{name}", focus: {{focus}}, tags: {{tags}} do
                   instance.{{test.name.id}} *args
                 end
               end
             {% end %}
           {% else %}
-            {{method.id}} {{test.name.stringify.gsub(/^(?:f|p)?test_/, "").underscore.gsub(/_/, " ")}}, focus: {{focus}}, tags: {{tags}} do
+            {{method.id}} {{description}}, focus: {{focus}}, tags: {{tags}} do
               instance.{{test.name.id}}
             end
           {% end %}
