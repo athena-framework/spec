@@ -49,18 +49,43 @@ struct CalculatorTest < SomeTypeTestCase
 end
 
 struct DataProviderTest < ASPEC::TestCase
-  # Data Providers allow reusing a test's multiple times with different input.
-  @[DataProvider("get_values")]
+  @[DataProvider("get_values_hash")]
+  @[DataProvider("get_values_named_tuple")]
   def test_squares(value : Int32, expected : Int32) : Nil
     (value ** 2).should eq expected
   end
 
-  # Returns a hash where the key represents the name of the test,
-  # and the value is a Tuple of data that should be provided to the test.
-  def get_values
+  def get_values_hash : Hash
     {
       "two"   => {2, 4},
       "three" => {3, 9},
+    }
+  end
+
+  def get_values_named_tuple : NamedTuple
+    {
+      four: {4, 16},
+      five: {5, 25},
+    }
+  end
+
+  @[DataProvider("get_values_array")]
+  @[DataProvider("get_values_tuple")]
+  def test_cubes(value : Int32, expected : Int32) : Nil
+    (value ** 3).should eq expected
+  end
+
+  def get_values_array : Array
+    [
+      {2, 8},
+      {3, 27},
+    ]
+  end
+
+  def get_values_tuple : Tuple
+    {
+      {4, 64},
+      {5, 125},
     }
   end
 end

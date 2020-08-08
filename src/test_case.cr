@@ -103,7 +103,7 @@
 #
 # ## Data Providers
 #
-# A `DataProvider` can be used to reduce duplication, see the corresponding type or more information.
+# A `DataProvider` can be used to reduce duplication, see the corresponding annotation or more information.
 #
 # ```
 # struct DataProviderTest < ASPEC::TestCase
@@ -115,7 +115,7 @@
 #
 #   # Returns a hash where the key represents the name of the test,
 #   # and the value is a Tuple of data that should be provided to the test.
-#   def get_values
+#   def get_values : Hash
 #     {
 #       "two"   => {2, 4},
 #       "three" => {3, 9},
@@ -164,9 +164,17 @@ abstract struct Athena::Spec::TestCase
 
   # Tests can be defined with arbitrary arguments.  These arguments are provided by one or more `DataProvider`.
   #
-  # A data provider is a method that returns a `Hash(String, Tuple)`,
-  # where the key is the description that will be used for the test,
-  # and the value is a tuple of the arguments that will be provided to the test.
+  # A data provider is a method that returns either a `Hash`, `NamedTuple`, `Array`, or `Tuple`.
+  #
+  # NOTE: The method's return type must be set to one of those types.
+  #
+  # If the return type is a `Hash` or `NamedTuple` then it is a keyed provider;
+  # the key will be used as part of the description for each test.
+  #
+  # If the return type is an `Array` or `Tuple` it is considered a keyless provider;
+  # the index will be used as part of the description for each test.
+  #
+  # NOTE: In both cases the value must be a `Tuple`; the values should be an ordered list of the arguments you want to provide to the test.
   #
   # One or more `DataProvider` annotations can be applied to a test
   # with a positional argument of the name of the providing methods.
@@ -181,15 +189,47 @@ abstract struct Athena::Spec::TestCase
   # require "athena-spec"
   #
   # struct DataProviderTest < ASPEC::TestCase
-  #   @[DataProvider("get_values")]
+  #   @[DataProvider("get_values_hash")]
+  #   @[DataProvider("get_values_named_tuple")]
   #   def test_squares(value : Int32, expected : Int32) : Nil
   #     (value ** 2).should eq expected
   #   end
   #
-  #   def get_values
+  #   # A keyed provider using a Hash.
+  #   def get_values_hash : Hash
   #     {
   #       "two"   => {2, 4},
   #       "three" => {3, 9},
+  #     }
+  #   end
+  #
+  #   # A keyed provider using a NamedTuple.
+  #   def get_values_named_tuple : NamedTuple
+  #     {
+  #       four: {4, 16},
+  #       five: {5, 25},
+  #     }
+  #   end
+  #
+  #   @[DataProvider("get_values_array")]
+  #   @[DataProvider("get_values_tuple")]
+  #   def test_cubes(value : Int32, expected : Int32) : Nil
+  #     (value ** 3).should eq expected
+  #   end
+  #
+  #   # A keyless provider using an Array.
+  #   def get_values_array : Array
+  #     [
+  #       {2, 8},
+  #       {3, 27},
+  #     ]
+  #   end
+  #
+  #   # A keyless provider using a Tuple.
+  #   def get_values_tuple : Tuple
+  #     {
+  #       {4, 64},
+  #       {5, 125},
   #     }
   #   end
   # end
@@ -198,6 +238,12 @@ abstract struct Athena::Spec::TestCase
   # # DataProviderTest
   # #   squares two
   # #   squares three
+  # #   squares four
+  # #   squares five
+  # #   cubes 0
+  # #   cubes 1
+  # #   cubes 0
+  # #   cubes 1
   # ```
   annotation DataProvider; end
 
@@ -241,11 +287,25 @@ abstract struct Athena::Spec::TestCase
 
           {% unless test.annotations(DataProvider).empty? %}
             {% for data_provider in test.annotations DataProvider %}
-              instance.{{data_provider[0].id}}.each do |name, args|
-                {{method.id}} "#{{{description}}} #{name}", focus: {{focus}}, tags: {{tags}} do
-                  instance.{{test.name.id}} *args
+              {% data_provider_method_name = data_provider[0] || data_provider.raise "One or more data provider for test '#{@type}##{test.name.id}' is mising its name." %}
+
+              {% provider_method_return_type = (@type.methods.find(&.name.stringify.==(data_provider_method_name)).return_type || raise "Data provider '#{@type}##{data_provider_method_name.id}' must have a return type of Hash, NamedTuple, Array, or Tuple.").resolve %}
+
+              {% if provider_method_return_type == Hash || provider_method_return_type == NamedTuple %}
+                instance.{{data_provider_method_name.id}}.each do |name, args|
+                  {{method.id}} "#{{{description}}} #{name}", focus: {{focus}}, tags: {{tags}} do
+                    instance.{{test.name.id}} *args
+                  end
                 end
-              end
+              {% elsif provider_method_return_type == Array || provider_method_return_type == Tuple %}
+                instance.{{data_provider_method_name.id}}.each_with_index do |args, idx|
+                  {{method.id}} "#{{{description}}} #{idx}", focus: {{focus}}, tags: {{tags}} do
+                    instance.{{test.name.id}} *args
+                  end
+                end
+              {% else %}
+                {% provider_method.raise "Unsupported data provider return type: '#{provider_method.return_type}'" %}
+              {% end %}
             {% end %}
           {% else %}
             {{method.id}} {{description}}, focus: {{focus}}, tags: {{tags}} do
