@@ -25,7 +25,7 @@ struct ExampleSpec < ASPEC::TestCase
   end
 
   # A pending test.
-  def ptest_substract : Nil
+  def ptest_subtract : Nil
     @target.substract(10, 5).should eq 5
   end
 end

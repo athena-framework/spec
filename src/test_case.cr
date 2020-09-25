@@ -293,13 +293,13 @@ abstract struct Athena::Spec::TestCase
 
               {% if provider_method_return_type == Hash || provider_method_return_type == NamedTuple %}
                 instance.{{data_provider_method_name.id}}.each do |name, args|
-                  {{method.id}} "#{{{description}}} #{name}", focus: {{focus}}, tags: {{tags}} do
+                  {{method.id}} "#{{{description}}} #{name}", file: {{test.filename}}, line: {{test.line_number}}, end_line: {{test.end_line_number}}, focus: {{focus}}, tags: {{tags}} do
                     instance.{{test.name.id}} *args
                   end
                 end
               {% elsif provider_method_return_type == Array || provider_method_return_type == Tuple %}
                 instance.{{data_provider_method_name.id}}.each_with_index do |args, idx|
-                  {{method.id}} "#{{{description}}} #{idx}", focus: {{focus}}, tags: {{tags}} do
+                  {{method.id}} "#{{{description}}} #{idx}", file: {{test.filename}}, line: {{test.line_number}}, end_line: {{test.end_line_number}}, focus: {{focus}}, tags: {{tags}} do
                     instance.{{test.name.id}} *args
                   end
                 end
@@ -308,7 +308,7 @@ abstract struct Athena::Spec::TestCase
               {% end %}
             {% end %}
           {% else %}
-            {{method.id}} {{description}}, focus: {{focus}}, tags: {{tags}} do
+            {{method.id}} {{description}}, file: {{test.filename}}, line: {{test.line_number}}, end_line: {{test.end_line_number}}, focus: {{focus}}, tags: {{tags}} do
               instance.{{test.name.id}}
             end
           {% end %}
