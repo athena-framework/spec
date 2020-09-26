@@ -40,7 +40,7 @@
 #     v1 + v2
 #   end
 #
-#   def substract(v1, v2)
+#   def subtract(v1, v2)
 #     raise NotImplementedError.new "TODO"
 #   end
 # end
@@ -62,7 +62,7 @@
 #
 #   # A pending test.
 #   def ptest_substract : Nil
-#     @target.substract(10, 5).should eq 5
+#     @target.subtract(10, 5).should eq 5
 #   end
 #
 #   # Private/protected methods can be used to reduce duplication within the context of single test case.
@@ -129,7 +129,7 @@
 # ASPEC.run_all # =>
 # # ExampleSpec
 # #   add
-# #   substract
+# #   subtract
 # #   a custom method name
 # # CalculatorTest
 # #   common
@@ -139,7 +139,7 @@
 # #   squares three
 # #
 # # Pending:
-# # ExampleSpec substract
+# # ExampleSpec subtract
 # #
 # # Finished in 172 microseconds
 # # 7 examples, 0 failures, 0 errors, 1 pending

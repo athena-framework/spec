@@ -10,9 +10,10 @@ Common/helpful Spec compliant testing utilities
 1. Add the dependency to your `shard.yml`:
 
 ```yaml
-dependencies:
+development_dependencies:
   athena-spec:
     github: athena-framework/spec
+    version: ~> 0.2.0
 ```
 
 2. Run `shards install`
