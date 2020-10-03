@@ -89,3 +89,19 @@ struct DataProviderTest < ASPEC::TestCase
     }
   end
 end
+
+abstract struct AbstractParent < ASPEC::TestCase
+  @[DataProvider("get_values")]
+  def test_cubes(value : Int32, expected : Int32) : Nil
+    value.should eq expected
+  end
+
+  def get_values : Tuple
+    {
+      {1, 1},
+      {2, 2},
+    }
+  end
+end
+
+struct Child < AbstractParent; end
