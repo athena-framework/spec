@@ -9,7 +9,7 @@ jobs:
   deploy_docs:
     runs-on: ubuntu-latest
     container:
-      image: crystallang/crystal
+      image: crystallang/crystal:latest-alpine
     steps:
       - name: Install Build Dependencies
         run: apk add --update rsync
