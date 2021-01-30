@@ -1,6 +1,6 @@
 name: athena-spec
 
-version: 0.2.3
+version: 0.2.4
 
 crystal: '>= 0.35.0'
 
@@ -8,7 +8,7 @@ license: MIT
 
 repository: https://github.com/athena-framework/spec
 
-documentation: https://athena-framework.github.io/spec/Athena/Spec.html
+documentation: https://athenaframework.org/Spec
 
 description: |
   Common/helpful Spec compliant testing utilities.
