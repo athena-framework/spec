@@ -19,7 +19,7 @@ describe ASPEC::Methods do
     it "with input" do
       input = IO::Memory.new "foo\nbar"
 
-      run_executable "cat", input, ["-A"] do |output, error, status|
+      run_executable "cat", input, ["-e"] do |output, error, status|
         output.should eq "foo$\nbar"
         error.should be_empty
         status.success?.should be_true
