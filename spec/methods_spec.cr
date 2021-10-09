@@ -17,21 +17,19 @@ describe ASPEC::Methods do
     end
 
     it "with input" do
-      input = IO::Memory.new %({"id":1})
+      input = IO::Memory.new "foo\nbar"
 
-      run_executable "jq", input, [".", "-c"] do |output, error, status|
-        output.should eq %({"id":1}\n)
+      run_executable "cat", input, ["-A"] do |output, error, status|
+        output.should eq "foo$\nbar"
         error.should be_empty
         status.success?.should be_true
       end
     end
 
     it "with error output" do
-      input = IO::Memory.new %({"id"1})
-
-      run_executable "jq", input, [".", "-c"] do |output, error, status|
+      run_executable "cat", args: ["missing.txt"] do |output, error, status|
         output.should be_empty
-        error.should eq %(parse error: Expected separator between values at line 1, column 7\n)
+        error.should contain "No such file or directory"
         status.success?.should be_false
       end
     end
