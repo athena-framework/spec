@@ -452,7 +452,7 @@ abstract struct Athena::Spec::TestCase
   private macro test(name, focus = false, *tags)
     {% if focus %}@[Focus]{% end %}
     {% unless tags.empty? %}@[Tags({{tags.splat}})]{% end %}
-    def test_{{name.gsub(/\ /, "_").underscore.downcase.id}} : Nil
+    def test_{{name.gsub(/[^\w]/, "_").underscore.downcase.id}} : Nil
       {{yield}}
     end
   end
