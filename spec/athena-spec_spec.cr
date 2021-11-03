@@ -28,6 +28,10 @@ struct ExampleSpec < ASPEC::TestCase
   def ptest_subtract : Nil
     @target.substract(10, 5).should eq 5
   end
+
+  test "with macro helper" do
+    @target.add(1, 2).should eq 3
+  end
 end
 
 abstract struct SomeTypeTestCase < ASPEC::TestCase
