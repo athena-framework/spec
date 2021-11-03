@@ -32,6 +32,14 @@ struct ExampleSpec < ASPEC::TestCase
   test "with macro helper" do
     @target.add(1, 2).should eq 3
   end
+
+  test "GET /api/:slug" do
+    @target.add(1, 2).should eq 3
+  end
+
+  test "123_foo bar" do
+    @target.add(1, 2).should eq 3
+  end
 end
 
 abstract struct SomeTypeTestCase < ASPEC::TestCase
